@@ -12,7 +12,7 @@ from datetime import datetime, timezone, timedelta
 from playwright.sync_api import sync_playwright
 
 # 环境变量配置(私库可直接在双引号内填写,session建议填写secrets,需要自动更新)
-USER_ID      = os.getenv("USER_ID") or ""  # 用户ID,必填,登录后右上角个人设置里进去就看到ID了,一般是6位数
+USER_ID      = os.getenv("USER_ID") or ""  # 可选；为空时脚本会通过 SESSION 自动获取当前用户
 SESSION      = os.getenv("SESSION") or ""  # session必填,登录后F12或右键检查菜单进去,选择应用程序或Appcations栏,找到cookie,右边找到session的值
 TG_BOT_TOKEN = os.getenv("TG_BOT_TOKEN") or ""  # Telegram bot token,不需要通知可以留空
 TG_CHAT_ID   = os.getenv("TG_CHAT_ID") or ""    # Telegram chat id
@@ -205,8 +205,12 @@ def build_headers() -> dict:
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
-        "new-api-user": USER_ID,
     }
+    # GoRouter 的登录 Session 足以识别用户。保留该请求头是为了兼容
+    # 仍要求显式用户 ID 的同类部署，但不再要求用户手动填写。
+    if USER_ID:
+        headers["new-api-user"] = USER_ID
+    return headers
 
 def get_user_info(session: requests.Session, headers: dict) -> dict | None:
     """
@@ -317,7 +321,8 @@ def run_checkin():
     all_cookies = {}
     all_cookies.update(waf_cookies)
     all_cookies["session"] = SESSION
-    all_cookies["user_id"] = USER_ID
+    if USER_ID:
+        all_cookies["user_id"] = USER_ID
 
     for name, value in all_cookies.items():
         session.cookies.set(name, value, domain="gorouter.app", path="/")
@@ -342,7 +347,9 @@ def run_checkin():
 
     log("INFO", "✅ 登录成功！（API 验证通过）")
     username = user_info_1.get("username", "")
+    account_id = user_info_1.get("id", "")
     log("INFO", f"用户名: {username}")
+    log("INFO", f"用户 ID: {account_id}")
 
     first_balance = format_balance(user_info_1.get("quota", 0))
     log("INFO", f"初始余额: {first_balance}")
