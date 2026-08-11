@@ -207,8 +207,7 @@ def build_headers() -> dict:
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
     }
-    # GoRouter 的登录 Session 足以识别用户。保留该请求头是为了兼容
-    # 仍要求显式用户 ID 的同类部署，但不再要求用户手动填写。
+    # gorouter.app 的 API 依赖 new-api-user 请求头识别用户
     if USER_ID:
         headers["new-api-user"] = USER_ID
     return headers
