@@ -199,7 +199,7 @@ def build_headers() -> dict:
         ),
         "Accept": "application/json, text/plain, */*",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Encoding": "gzip, deflate",
         "Referer": SITE_URL,
         "Origin": SITE_URL,
         "Connection": "keep-alive",
