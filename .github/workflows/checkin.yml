@@ -43,6 +43,7 @@ jobs:
         run: python app.py
 
       - name: Run check-in script (account 2)
+        if: always()
         env:
           USER_ID: ${{ secrets.USER_ID_2 }}
           SESSION: ${{ secrets.SESSION_2 }}
