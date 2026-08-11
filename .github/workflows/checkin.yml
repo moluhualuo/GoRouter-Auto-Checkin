@@ -33,10 +33,20 @@ jobs:
           playwright install --with-deps chromium
 
       # ---------- 运行领币脚本 ----------
-      - name: Run check-in script
+      - name: Run check-in script (account 1)
         env:
-          USER_ID: ${{ secrets.USER_ID }}
-          SESSION: ${{ secrets.SESSION }}
+          USER_ID: ${{ secrets.USER_ID_1 }}
+          SESSION: ${{ secrets.SESSION_1 }}
+          SESSION_SECRET_NAME: SESSION_1
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python app.py
+
+      - name: Run check-in script (account 2)
+        env:
+          USER_ID: ${{ secrets.USER_ID_2 }}
+          SESSION: ${{ secrets.SESSION_2 }}
+          SESSION_SECRET_NAME: SESSION_2
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         run: python app.py
