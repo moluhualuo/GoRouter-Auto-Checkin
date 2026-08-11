@@ -15,7 +15,8 @@ from playwright.sync_api import sync_playwright
 USER_ID      = os.getenv("USER_ID") or ""  # 可选；为空时脚本会通过 SESSION 自动获取当前用户
 SESSION      = os.getenv("SESSION") or ""  # session必填,登录后F12或右键检查菜单进去,选择应用程序或Appcations栏,找到cookie,右边找到session的值
 TG_BOT_TOKEN = os.getenv("TG_BOT_TOKEN") or ""  # Telegram bot token,不需要通知可以留空
-TG_CHAT_ID   = os.getenv("TG_CHAT_ID") or ""    # Telegram chat id
+TG_CHAT_ID   = os.getenv("TG_CHAT_ID") or ""
+SESSION_SECRET_NAME = os.getenv("SESSION_SECRET_NAME") or "SESSION"  # GitHub secret 名称，多账号时用于区分    # Telegram chat id
 
 SITE_URL = "https://gorouter.app"
 SESSION_TTL_DAYS = 30  # Session 有效期 30 天，剩余 < 3 天则更新
@@ -383,7 +384,7 @@ def run_checkin():
     session_status = ""
     if need_update:
         log("WARN", "Session 即将过期，尝试更新 GitHub Secret...")
-        success = update_github_secret("SESSION", SESSION)
+        success = update_github_secret(SESSION_SECRET_NAME, SESSION)
         if success:
             session_status = f"✅ Session 已自动更新（剩余 {remaining_days:.1f} 天）" if remaining_days else "✅ Session 已自动更新"
         else:
