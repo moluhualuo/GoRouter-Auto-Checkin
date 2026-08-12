@@ -251,7 +251,7 @@ def do_check_in(session: requests.Session, headers: dict) -> bool:
     """
     调用签到接口 POST /api/user/sign_in
     """
-    url = f"{SITE_URL}/api/user/sign_in"
+    url = f"{SITE_URL}/api/user/checkin"
 
     checkin_headers = headers.copy()
     checkin_headers["Content-Type"] = "application/json"
@@ -273,6 +273,8 @@ def do_check_in(session: requests.Session, headers: dict) -> bool:
                     if any(kw in str(error_msg).lower() for kw in already_keywords):
                         log("INFO", "今日已签到过")
                         return True
+                    if "turnstile" in str(error_msg).lower():
+                        log("WARN", "gorouter.app 签到需要 Cloudflare Turnstile 人机验证，headless 自动化无法自动完成，需通过浏览器手动签到")
                     log("WARN", f"签到失败: {error_msg}")
                     return False
             except json.JSONDecodeError:
