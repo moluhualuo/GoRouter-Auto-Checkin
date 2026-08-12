@@ -249,7 +249,7 @@ def get_user_info(session: requests.Session, headers: dict) -> dict | None:
 
 def do_check_in(session: requests.Session, headers: dict) -> bool:
     """
-    调用签到接口 POST /api/user/sign_in
+    调用签到接口 POST /api/user/checkin
     """
     url = f"{SITE_URL}/api/user/checkin"
 
